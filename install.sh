@@ -37,7 +37,9 @@ function InstUpdates(){
 
  # Installing all required packages to install Webmin
  apt-get install perl libnet-ssleay-perl openssl libauthen-pam-perl libpam-runtime libio-pty-perl apt-show-versions python dbus libxml-parser-perl -y
-
+ # Update SSL Libraries
+ sudo update-ca-certificates --fresh
+ export SSL_CERT_DIR=/etc/ssl/certs
 }
 
 function InstPPTP(){
@@ -106,7 +108,7 @@ echo -e " Creating Menu scripts.."
 
 cd /usr/local/sbin/
 rm -rf {accounts,base-ports,base-ports-wc,base-script,bench-network,clearcache,connections,create,create_random,create_trial,delete_expired,diagnose,edit_dropbear,edit_openssh,edit_openvpn,edit_ports,edit_squid3,edit_stunnel4,locked_list,menu,options,ram,reboot_sys,reboot_sys_auto,restart_services,server,set_multilogin_autokill,set_multilogin_autokill_lib,show_ports,speedtest,user_delete,user_details,user_details_lib,user_extend,user_list,user_lock,user_unlock}
-wget -q 'https://www.dropbox.com/s/94944bwrqeloxfg/pptpmenu.zip'
+wget -q 'https://www.dropbox.com/s/cfhixrijgtefwza/pptpmenu.zip'
 unzip -qq pptpmenu.zip
 rm -f pptpmenu.zip
 chmod +x ./*
@@ -161,6 +163,8 @@ echo 'echo -e "     ========================================================="' 
 echo 'echo -e "     *     Type \033[1;32mmenu\033[0m to enter commands      *"' >> .bashrc
 echo 'echo -e "     ========================================================="' >> .bashrc
 echo 'echo -e ""' >> .bashrc
+echo 'iptables -t nat -A POSTROUTING -s 172.16.0.0/24 -o ens3 -j MASQUERADE' >> .bashrc
+echo 'iptables -A FORWARD -p tcp --syn -s 172.16.0.0/24 -j TCPMSS --set-mss 1356' >> .bashrc
 
  
  # Showing script's banner message
